@@ -1,7 +1,7 @@
-aiohttp
-aiofiles
-colorama
-loguru
-websockets-proxy
-pyopenssl
-PyGrassClient
+aiohttp>=3.8
+aiofiles>=23.1
+colorama>=0.4
+loguru>=0.7
+websockets-proxy>=0.1
+pyOpenSSL>=23.0
+PyGrassClient>=2.0.6
