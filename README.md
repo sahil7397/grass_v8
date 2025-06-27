@@ -5,7 +5,7 @@ Welcome to **GRASSBOT**, a powerful and simple automation tool designed to work 
 ---
 
 ## 🔧 Features
-
+--Supports **Grass 1.25× earnings** using WebSocket automation 
 - Automates interactions with Grass  
 - Designed for performance and ease-of-use  
 - Fully compatible with private proxies from YouProxy  
@@ -56,7 +56,7 @@ Step-by-step tutorial:
 
 ## 🤝 Referral Support
 
-Sign up on [Grass.io](https://app.grass.io/register/?referralCode=TbDhZloUm8RZg3A) using the referral code `TbDhZloUm8RZg3A` to support the project and unlock earning potential on autopilot.
+Sign up on [Grass.io](https://app.grass.io/register/?referralCode=dzdK1lH813qdKw7) using the referral code 'dzdK1lH813qdKw7' to support the project and unlock earning potential on autopilot.
 
 ---
 
