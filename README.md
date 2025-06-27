@@ -17,8 +17,9 @@ Welcome to **GRASSBOT**, a powerful and simple automation tool designed to work 
 
 1. **Clone the repo**
    ```bash
-   git clone https://github.com/yourusername/grass_v8.5.git
+git clone https://github.com/sahilhashmi/grass_v8.5.git
 cd grass_v8.5
+
    ```
 
 2. **Install requirements**
