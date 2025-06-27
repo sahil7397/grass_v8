@@ -2,15 +2,40 @@ import os
 import sys
 import time
 import asyncio
+import subprocess
+import glob
+import webbrowser
 
+# ─── Ensure PyGrassClient ─────────────────────────────
 try:
     from PyGrassClient import PyGrassClient
 except ImportError:
     print("[❌] PyGrassClient not found. Installing it now...")
-    os.system("pip install PyGrassClient")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "PyGrassClient"])
+    from PyGrassClient import PyGrassClient
 
+# ─── Ensure Colorama ──────────────────────────────────
+try:
+    from colorama import init, Fore, Style
+    init(autoreset=True)
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "colorama"])
+    from colorama import init, Fore, Style
+    init(autoreset=True)
+
+# ─── Color Constants ──────────────────────────────────
+BOLD = Style.BRIGHT
+RESET = Style.RESET_ALL
+GREEN = Fore.GREEN
+YELLOW = Fore.YELLOW
+CYAN = Fore.CYAN
+RED = Fore.RED
+BLUE = Fore.BLUE
+
+# ─── Banner ───────────────────────────────────────────
 def show_banner():
-    banner = """
+    banner = f"""
+    {GREEN}
     ┌────────────────────────────────────────────┐
     │        🌲 FOREST ARMY SCRIPT TOOL 🌲       │
     ├────────────────────────────────────────────┤
@@ -19,11 +44,13 @@ def show_banner():
     │ Contact  : t.me/forestarmy                 │
     │           t.me/rspyder2_bot                │
     └────────────────────────────────────────────┘
+    {RESET}
     """
     print(banner)
 
 show_banner()
 
+# ─── URL Launcher (Browser or ADB) ───────────────────
 urls = [
     "https://www.profitableratecpm.com/rfzgg4b8?key=d854215a4b3c449e653cd67d89b382d0",
     "https://www.profitableratecpm.com/zssjbg72?key=e386c4eb68236f3c2f097be5345b01fc"
@@ -31,21 +58,20 @@ urls = [
 
 for url in urls:
     print(f"[+] Opening: {url}")
-    os.system(f'am start -a android.intent.action.VIEW -d "{url}"')
+    try:
+        # Check for Android ADB support
+        adb_devices = os.popen("adb devices").read()
+        if "device" in adb_devices.splitlines()[-1]:
+            os.system(f'adb shell am start -a android.intent.action.VIEW -d "{url}"')
+        else:
+            webbrowser.open(url)
+    except Exception as e:
+        print(f"{RED}[❌] Failed to open URL: {e}{RESET}")
     time.sleep(5)
 
-print("\nTHANK YOU!!")
+print(f"\n{GREEN}[✅] Done opening URLs.{RESET}\n")
 
-# ─── Terminal Color Setup ──────────────────────
-BOLD = "\033[1m"
-RESET = "\033[0m"
-GREEN = "\033[92m"
-YELLOW = "\033[93m"
-CYAN = "\033[96m"
-RED = "\033[91m"
-BLUE = "\033[94m"
-
-# ─── Menu Display ──────────────────────────────
+# ─── Menu Banner ─────────────────────────────────────
 BANNER = f"""
 {GREEN}{BOLD}
 ╔═════════════════════════════════════════════════╗
@@ -69,7 +95,7 @@ Use {BOLD}FOREST15{RESET} on {BLUE}https://youproxy.io/{RESET} 💸
 {RESET}
 """
 
-# ─── GRASS CLIENT RUNNER ────────────────────────
+# ─── GRASS CLIENT RUNNER ─────────────────────────────
 async def run_grass_client():
     try:
         with open("user_id.txt", "r") as f:
@@ -102,12 +128,20 @@ async def run_grass_client():
 def run_script():
     asyncio.run(run_grass_client())
 
-# ─── MENU OPTION: Delete Logs ───────────────────
+# ─── DELETE LOGS ─────────────────────────────────────
 def delete_logs():
     print(f"\n{YELLOW}[🧹] Deleting logs...{RESET}\n")
-    os.system("rm -f *.log logs/*.log")
+    log_files = glob.glob("*.log") + glob.glob("logs/*.log")
+    count = 0
+    for file in log_files:
+        try:
+            os.remove(file)
+            count += 1
+        except Exception as e:
+            print(f"{RED}Could not delete {file}: {e}{RESET}")
+    print(f"{GREEN}[✅] Deleted {count} log files.{RESET}")
 
-# ─── MENU OPTION: Proxy Entry ───────────────────
+# ─── ENTER PROXY ─────────────────────────────────────
 def enter_proxy():
     print(f"\n{CYAN}[✍️] Enter proxy manually (one per line). Type 'done' to finish.{RESET}\n")
     proxies = []
@@ -121,13 +155,16 @@ def enter_proxy():
         f.write("\n".join(proxies))
     print(f"\n{GREEN}[✅] Saved {len(proxies)} proxies to proxy.txt{RESET}")
 
-# ─── MENU OPTION: Download Proxies ───────────────
+# ─── DOWNLOAD PROXIES ────────────────────────────────
 def download_free_proxy():
     print(f"\n{CYAN}[🌐] Downloading free proxy list...{RESET}\n")
-    os.system("curl -s https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/all.txt -o proxy.txt")
-    print(f"{GREEN}[✅] Proxy list downloaded to proxy.txt{RESET}")
+    result = os.system("curl -s https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/all.txt -o proxy.txt")
+    if result == 0:
+        print(f"{GREEN}[✅] Proxy list downloaded to proxy.txt{RESET}")
+    else:
+        print(f"{RED}[❌] Failed to download proxy list. Make sure curl is installed.{RESET}")
 
-# ─── Main Menu Loop ──────────────────────────────
+# ─── MAIN MENU ───────────────────────────────────────
 def main():
     while True:
         print(BANNER)
